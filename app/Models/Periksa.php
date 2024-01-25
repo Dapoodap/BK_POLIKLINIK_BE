@@ -20,6 +20,7 @@ class Periksa extends Model
         'tanggal',
         'catatan',
         'biaya_periksa',
+        'status'
     ];
 
     public function daftar_poli()

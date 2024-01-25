@@ -31,22 +31,31 @@ Route::get('/admin/getAll',[AdminController::class, 'Index']);
 Route::post('/admin/LoginAdmin',[AdminController::class, 'LoginAdmin']);
 Route::post('/admin/PostAdmin',[AdminController::class, 'PostAdmin']);
 Route::get('/admin/ById/{id}',[AdminController::class, 'getById']);
+
 Route::get('/pasien/getAll',[PasienController::class, 'Index']);
 Route::post('/pasien/LoginPasien',[PasienController::class, 'LoginPasien']);
 Route::post('/pasien/PostPasien',[PasienController::class, 'postPasien']);
 Route::get('/pasien/ById/{id}',[PasienController::class, 'getById']);
+Route::put('/pasien/UpdatePasien/{id}',[PasienController::class, 'updatePasien']);
+Route::delete('/pasien/DeletePasien/{id}',[PasienController::class, 'deletePasien']);
+
 Route::get('/dokter/getAll',[DokterController::class, 'Index']);
 Route::post('/dokter/PostDokter',[DokterController::class, 'postDokter']);
 Route::post('/dokter/LoginDokter',[DokterController::class, 'LoginDokter']);
 Route::get('/dokter/ById/{id}',[DokterController::class, 'getById']);
+Route::put('/dokter/UpdateDokter/{id}',[DokterController::class, 'updateDokter']);
+Route::delete('/dokter/DeleteDokter/{id}',[DokterController::class, 'deleteDokter']);
 
 Route::get('/poli/getAll',[PoliController::class, 'Index']);
 Route::post('/poli/PostPoli',[PoliController::class, 'postPoli']);
+Route::get('/poli/ById/{$id}',[PoliController::class, 'getPoliById']);
+Route::put('/poli/UpdatePoli/{id}',[PoliController::class, 'editPoli']);
+Route::delete('/poli/DeletePoli/{id}',[PoliController::class, 'deletePoli']);
 
 Route::get('/obat/getAll',[ObatController::class, 'Index']);
 Route::get('/obat/ById/{id}',[ObatController::class, 'ById']);
 Route::post('/obat/PostObat',[ObatController::class, 'postObat']);
-Route::put('/obat/UpdateObat',[ObatController::class, 'updateObat']);
+Route::put('/obat/UpdateObat/{id}',[ObatController::class, 'updateObat']);
 Route::delete('/obat/DeleteObat/{id}',[ObatController::class, 'destroyObat']);
 
 Route::get('/jadwal/getAll',[JadwalPeriksaController::class, 'Index']);
@@ -54,17 +63,18 @@ Route::get('/jadwal/ById/{id}',[JadwalPeriksaController::class, 'ById']);
 Route::post('/jadwal/PostJadwal',[JadwalPeriksaController::class, 'postJadwal']);
 Route::put('/jadwal/UpdateJadwal/{id}',[JadwalPeriksaController::class, 'updateJadwal']);
 Route::delete('/jadwal/DeleteJadwal/{id}',[JadwalPeriksaController::class, 'destroyJadwal']);
+Route::get('/jadwal/ByPoliId/{id}',[JadwalPeriksaController::class, 'getByPoliId']);
 
 Route::get('/daftar/getAll',[DaftarPoliController::class, 'Index']);
 Route::get('/daftar/ById/{id}',[DaftarPoliController::class, 'ById']);
 Route::post('/daftar/PostJadwal',[DaftarPoliController::class, 'postDaftar']);
 Route::put('/daftar/UpdateJadwal',[DaftarPoliController::class, 'updateDaftar']);
-Route::delete('/daftar/DeleteJadwal/{id}',[DaftarPoliController::class, 'destroyDaftar']);
+Route::delete('/daftar/DeleteDaftar/{id}',[DaftarPoliController::class, 'destroyDaftar']);
 Route::get('/daftar/pasien/{id}',[DaftarPoliController::class, 'getByPasienId']);
 
 Route::get('/periksa/getAll',[PeriksaController::class, 'Index']);
 Route::get('/periksa/ById/{id}',[PeriksaController::class, 'ById']);
-Route::post('/periksa/PostJadwal',[PeriksaController::class, 'postPeriksa']);
+Route::post('/periksa/PostPeriksa',[PeriksaController::class, 'postPeriksa']);
 Route::put('/periksa/UpdateJadwal',[PeriksaController::class, 'updatePeriksa']);
 Route::delete('/periksa/DeleteJadwal/{id}',[PeriksaController::class, 'destroyPeriksa']);
 Route::get('/periksa/DaftarPoli/{id}',[PeriksaController::class, 'ByDaftarPoliId']);

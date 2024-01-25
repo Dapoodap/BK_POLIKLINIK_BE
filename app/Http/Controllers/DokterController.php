@@ -102,5 +102,57 @@ class DokterController extends Controller
             'message' => 'data dokter',
             'data' => $dokter
         ], 200);
+    }
+    public function updateDokter(Request $req, $id)
+    {
+        $validator = Validator::make($req->all(), [
+            'nama' => 'required',
+            'alamat' => 'required',
+            'no_hp' => 'required',
+            'id_poli' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        $dokter = Dokter::findOrFail($id);
+
+        if (!$dokter) {
+            return response()->json([
+                'error' => 'Dokter not found',
+            ], 404);
+        }
+
+        // Update the dokter information
+        $dokter->nama = $req->input('nama');
+        $dokter->alamat = $req->input('alamat');
+        $dokter->no_hp = $req->input('no_hp');
+        $dokter->id_poli = $req->input('id_poli');
+        $dokter->password = bcrypt($req->input('password')); // Use bcrypt to hash the password
+        $dokter->save();
+
+        return response()->json([
+            "message" => "Dokter updated",
+            "data" => $dokter,
+        ], 200);
+    }
+
+    public function deleteDokter($id)
+    {
+        $dokter = Dokter::findOrFail($id);
+
+        if (!$dokter) {
+            return response()->json([
+                'error' => 'Dokter not found',
+            ], 404);
+        }
+
+        // Delete the dokter
+        $dokter->delete();
+
+        return response()->json([
+            "message" => "Dokter deleted",
+        ], 200);
     } 
 }

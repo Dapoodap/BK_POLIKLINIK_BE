@@ -13,28 +13,30 @@ class JadwalPeriksaController extends Controller
     {
         $jadwal_periksa = JadwalPeriksa::with('dokter.poli')->get();
 
-
         return response()->json([
             'success' => true,
             'message' => 'Daftar data jadwal periksa',
             'data' => $jadwal_periksa
         ], 200);
     }
+
     public function ById($id)
     {
         $jadwal_periksa = JadwalPeriksa::with('dokter')->find($id);
 
         if (!$jadwal_periksa) {
             return response()->json([
-                'error' => 'jadwal not found',
+                'error' => 'Jadwal not found',
             ], 404);
         }
+
         return response()->json([
             'success' => true,
             'message' => 'Detail data jadwal periksa',
             'data' => $jadwal_periksa
         ], 200);
     }
+
     public function postJadwal(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -50,9 +52,10 @@ class JadwalPeriksaController extends Controller
             return response()->json($validator->errors(), 400);
         }
 
-        $existingActiveRecord = JadwalPeriksa::where('status', 'Y')
-            ->where('id_dokter', $request->input('id_dokter'))
+        // Cek apakah jadwal aktif sudah ada untuk dokter pada hari yang sama
+        $existingActiveRecord = JadwalPeriksa::where('id_dokter', $request->input('id_dokter'))
             ->where('hari', $request->input('hari'))
+            ->where('status', 'Y')
             ->first();
 
         if ($existingActiveRecord && $request->input('status') === 'Y') {
@@ -61,12 +64,7 @@ class JadwalPeriksaController extends Controller
             ], 400);
         }
 
-        if ($existingActiveRecord && $request->input('status') === 'Y') {
-            return response()->json([
-                'error' => 'Jadwal Dengan Status Aktif Ditemukan',
-            ], 400);
-        }
-
+        // Buat jadwal baru
         $jadwal_periksa = JadwalPeriksa::create(
             array_merge(
                 $validator->validated(),
@@ -80,6 +78,7 @@ class JadwalPeriksaController extends Controller
             'data' => $jadwal_periksa
         ], 201);
     }
+
     public function updateJadwal(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
@@ -98,6 +97,14 @@ class JadwalPeriksaController extends Controller
         $jadwal_periksa = JadwalPeriksa::findOrFail($id);
 
         if ($jadwal_periksa) {
+            // Menonaktifkan jadwal sebelumnya jika ada
+            JadwalPeriksa::where('id_dokter', $jadwal_periksa->id_dokter)
+                ->where('hari', $jadwal_periksa->hari)
+                ->where('status', 'Y')
+                ->where('id', '!=', $jadwal_periksa->id)
+                ->update(['status' => 'N']);
+
+            // Mengupdate jadwal yang dipilih
             $jadwal_periksa->update($validator->validated());
 
             return response()->json([
@@ -130,5 +137,19 @@ class JadwalPeriksaController extends Controller
             'success' => false,
             'message' => 'Jadwal periksa tidak ditemukan',
         ], 404);
+    }
+
+    public function getByPoliId($poliId)
+    {
+        // Assuming you have a relationship between JadwalPeriksa and Poli
+        $jadwalPeriksa = JadwalPeriksa::whereHas('dokter.poli', function ($query) use ($poliId) {
+            $query->where('id', $poliId);
+        })->with('dokter')->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Daftar jadwal periksa berdasarkan Poli ID',
+            'data' => $jadwalPeriksa,
+        ], 200);
     }
 }

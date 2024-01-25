@@ -44,8 +44,6 @@ class PeriksaController extends Controller
         $validator = Validator::make($req->all(), [
             'id_daftar_poli' => 'required|string',
             'tanggal' => 'required|date',
-            'catatan' => 'required|string',
-            'biaya_periksa' => 'required|integer',
         ]);
 
         if ($validator->fails()) {

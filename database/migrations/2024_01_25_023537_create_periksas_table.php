@@ -17,7 +17,7 @@ return new class extends Migration
             $table->dateTime('tanggal')->nullable();
             $table->text('catatan')->nullable();
             $table->integer('biaya_periksa')->nullable();
-
+            $table->string('status')->default('N');
             $table->foreign('id_daftar_poli')->references('id')->on('daftar_poli');
         });
     }

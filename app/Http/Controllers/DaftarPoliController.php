@@ -11,7 +11,7 @@ class DaftarPoliController extends Controller
 {
     public function index()
     {
-        $daftar_poli = DaftarPoli::with('pasien', 'jadwal_periksa')->get();
+        $daftar_poli = DaftarPoli::with('pasien', 'jadwal_periksa.dokter')->get();
 
 
         return response()->json([
@@ -61,7 +61,8 @@ class DaftarPoliController extends Controller
         $daftar->no_antrian = $nomorselanjutnya;
         $daftar->save();
         return response()->json([
-            "message" => "pendaftaran added"
+            "message" => "pendaftaran added",
+            "id" => $daftar->id
         ],201);
     }
     public function updateDaftar(Request $req, $id)
@@ -113,12 +114,20 @@ class DaftarPoliController extends Controller
     }
     public function getByPasienId($id)
     {
-        $daftar_poli = DaftarPoli::with('pasien', 'jadwal_periksa')->where('id_pasien', $id)->get();
-
+        $daftar_poli = DaftarPoli::with('pasien', 'jadwal_periksa.dokter.poli')->where('id_pasien', $id)->get();
+    
+        if ($daftar_poli->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data not found',
+            ], 404);
+        }
+    
         return response()->json([
             'success' => true,
             'message' => 'Detail data daftar poli',
             'data' => $daftar_poli
         ], 200);
     }
+    
 }

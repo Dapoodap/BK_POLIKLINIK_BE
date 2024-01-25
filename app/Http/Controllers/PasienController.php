@@ -22,8 +22,7 @@ class PasienController extends Controller
         ], 200);
     }
     public function postPasien(Request $req)
-    {
-        {
+    { {
             $validator  = Validator::make($req->all(), [
                 'nama'      => 'required',
                 'username'  => 'required|unique:pasien', // Perhatikan penambahan 'unique:pasien'
@@ -31,31 +30,31 @@ class PasienController extends Controller
                 'no_hp'     => 'required',
                 'no_ktp'    => 'required',
                 'password'  => 'required',
-          ]);
-  
-          if ($validator->fails()) {
-              return response()->json($validator->errors(), 400);
-          }
+            ]);
 
-          $jumlahPasien = Pasien::count();
-    
-          // Membuat nomor RM dengan format YYYYMM-XXX
-          $nomorRM = date('Ym') . '-' . sprintf('%03d', $jumlahPasien + 1);
-          $pasien = new Pasien();
-          $pasien->id = Str::uuid(); // Membuat UUID baru
-          $pasien->nama = $req->input('nama');
-          $pasien->username = $req->input('username');
-          $pasien->alamat = $req->input('alamat');
-          $pasien->no_hp = $req->input('no_hp');
-          $pasien->no_ktp = $req->input('no_ktp');
-          $pasien->role = $req->input('role');
-          $pasien->no_rm = $nomorRM;
-          $pasien->password =bcrypt($req->input('password')); // Gunakan bcrypt untuk menyandikan password
-          $pasien->save();
-          return response()->json([
-              "message" => "pasien added"
-          ],201);
-      }
+            if ($validator->fails()) {
+                return response()->json($validator->errors(), 400);
+            }
+
+            $jumlahPasien = Pasien::count();
+
+            // Membuat nomor RM dengan format YYYYMM-XXX
+            $nomorRM = date('Ym') . '-' . sprintf('%03d', $jumlahPasien + 1);
+            $pasien = new Pasien();
+            $pasien->id = Str::uuid(); // Membuat UUID baru
+            $pasien->nama = $req->input('nama');
+            $pasien->username = $req->input('username');
+            $pasien->alamat = $req->input('alamat');
+            $pasien->no_hp = $req->input('no_hp');
+            $pasien->no_ktp = $req->input('no_ktp');
+            $pasien->role = $req->input('role');
+            $pasien->no_rm = $nomorRM;
+            $pasien->password = bcrypt($req->input('password')); // Gunakan bcrypt untuk menyandikan password
+            $pasien->save();
+            return response()->json([
+                "message" => "pasien added"
+            ], 201);
+        }
     }
     public function LoginPasien(request $req)
     {
@@ -73,12 +72,12 @@ class PasienController extends Controller
 
         $credentials = $req->only('username', 'password');
         $user = Pasien::where('username', $credentials['username'])->first();
-        
+
         if ($user && Hash::check($credentials['password'], $user->password)) {
             // Login successful
-            $customClaims = ['id' => $user->id,'role'=>$user->role];
+            $customClaims = ['id' => $user->id, 'role' => $user->role];
             $token = JWTAuth::claims($customClaims)->fromUser($user);
-            
+
             return response()->json([
                 'message' => 'Login successful',
                 'user' => $user,
@@ -90,8 +89,6 @@ class PasienController extends Controller
                 'error' => 'Invalid credentials',
             ], 401);
         }
-       
-        
     }
     public function getById($id)
     {
@@ -108,5 +105,57 @@ class PasienController extends Controller
             'message' => 'data pasien',
             'data' => $pasien
         ], 200);
-    } 
+    }
+    public function updatePasien(Request $req, $id)
+    {
+        $validator = Validator::make($req->all(), [
+            'nama' => 'required',
+            'username' => 'required',
+            'alamat' => 'required',
+            'no_hp' => 'required',
+            'no_ktp' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        $pasien = Pasien::findOrFail($id);
+
+        if (!$pasien) {
+            return response()->json([
+                'error' => 'Pasien not found',
+            ], 404);
+        }
+
+        // Update the pasien information
+        $pasien->nama = $req->input('nama');
+        $pasien->alamat = $req->input('alamat');
+        $pasien->no_hp = $req->input('no_hp');
+        $pasien->no_ktp = $req->input('no_ktp');
+        $pasien->username = $req->input('username');
+        $pasien->save();
+
+        return response()->json([
+            "message" => "Pasien updated",
+            "data" => $pasien,
+        ], 200);
+    }
+    public function deletePasien($id)
+    {
+        $pasien = Pasien::findOrFail($id);
+
+        if (!$pasien) {
+            return response()->json([
+                'error' => 'Pasien not found',
+            ], 404);
+        }
+
+        // Delete the pasien
+        $pasien->delete();
+
+        return response()->json([
+            "message" => "Pasien deleted",
+        ], 200);
+    }
 }
