@@ -15,7 +15,11 @@ class AdminController extends Controller
     public function Index()
     {
         $admin = Admin::all();
-        return response()->json($admin);
+        return response()->json([
+            'success' => true,
+            'message' => 'Daftar data admin',
+            'data' => $admin
+        ], 200);
     }
     public function PostAdmin(request $req)
     {
@@ -84,6 +88,10 @@ class AdminController extends Controller
             ], 404);
         }
 
-        return response()->json($admin);
+        return response()->json([
+            'success' => true,
+            'message' => 'data admin',
+            'data' => $admin
+        ], 200);
     } 
 }

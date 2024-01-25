@@ -14,14 +14,18 @@ class DokterController extends Controller
     public function Index()
     {
         $dokter = Dokter::with('poli')->get();
-        return response()->json($dokter);
+        return response()->json([
+            'success' => true,
+            'message' => 'daftar data dokter',
+            'data' => $dokter
+        ], 200);
     }
     public function postDokter(Request $req)
     {
         {
             $validator  = Validator::make($req->all(), [
                 'nama'      => 'required',
-                'username'  => 'required|unique:pasien', // Perhatikan penambahan 'unique:pasien'
+                'username'  => 'required|unique:dokter', // Perhatikan penambahan 'unique:pasien'
                 'alamat'    => 'required',
                 'no_hp'     => 'required',
                 'id_poli'    => 'required',
@@ -32,16 +36,16 @@ class DokterController extends Controller
               return response()->json($validator->errors(), 400);
           }
     
-          $pasien = new Dokter();
-          $pasien->id = Str::uuid(); // Membuat UUID baru
-          $pasien->nama = $req->input('nama');
-          $pasien->username = $req->input('username');
-          $pasien->alamat = $req->input('alamat');
-          $pasien->no_hp = $req->input('no_hp');
-          $pasien->id_poli = $req->input('id_poli');
-          $pasien->role = $req->input('role');
-          $pasien->password = bcrypt($req->input('password')); // Gunakan bcrypt untuk menyandikan password
-          $pasien->save();
+          $dokter = new Dokter();
+          $dokter->id = Str::uuid(); // Membuat UUID baru
+          $dokter->nama = $req->input('nama');
+          $dokter->username = $req->input('username');
+          $dokter->alamat = $req->input('alamat');
+          $dokter->no_hp = $req->input('no_hp');
+          $dokter->id_poli = $req->input('id_poli');
+          $dokter->role = $req->input('role');
+          $dokter->password = bcrypt($req->input('password')); // Gunakan bcrypt untuk menyandikan password
+          $dokter->save();
           return response()->json([
               "message" => "dokter added"
           ],201);
@@ -93,6 +97,10 @@ class DokterController extends Controller
             ], 404);
         }
 
-        return response()->json($dokter);
+        return response()->json([
+            'success' => true,
+            'message' => 'data dokter',
+            'data' => $dokter
+        ], 200);
     } 
 }

@@ -15,7 +15,11 @@ class PasienController extends Controller
     public function Index()
     {
         $pasien = Pasien::all();
-        return response()->json($pasien);
+        return response()->json([
+            'success' => true,
+            'message' => 'daftar data pasien',
+            'data' => $pasien
+        ], 200);
     }
     public function postPasien(Request $req)
     {
@@ -99,6 +103,10 @@ class PasienController extends Controller
             ], 404);
         }
 
-        return response()->json($pasien);
+        return response()->json([
+            'success' => true,
+            'message' => 'data pasien',
+            'data' => $pasien
+        ], 200);
     } 
 }
