@@ -64,6 +64,7 @@ Route::post('/jadwal/PostJadwal',[JadwalPeriksaController::class, 'postJadwal'])
 Route::put('/jadwal/UpdateJadwal/{id}',[JadwalPeriksaController::class, 'updateJadwal']);
 Route::delete('/jadwal/DeleteJadwal/{id}',[JadwalPeriksaController::class, 'destroyJadwal']);
 Route::get('/jadwal/ByDokterId/{id}',[JadwalPeriksaController::class, 'getAllJadwalByDokterId']);
+Route::get('/jadwal/ByPoliId/{id}',[JadwalPeriksaController::class, 'getAllJadwalByPoliId']);
 
 Route::get('/daftar/getAll',[DaftarPoliController::class, 'Index']);
 Route::get('/daftar/ById/{id}',[DaftarPoliController::class, 'ById']);
