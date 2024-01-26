@@ -63,26 +63,28 @@ Route::get('/jadwal/ById/{id}',[JadwalPeriksaController::class, 'ById']);
 Route::post('/jadwal/PostJadwal',[JadwalPeriksaController::class, 'postJadwal']);
 Route::put('/jadwal/UpdateJadwal/{id}',[JadwalPeriksaController::class, 'updateJadwal']);
 Route::delete('/jadwal/DeleteJadwal/{id}',[JadwalPeriksaController::class, 'destroyJadwal']);
-Route::get('/jadwal/ByPoliId/{id}',[JadwalPeriksaController::class, 'getByPoliId']);
+Route::get('/jadwal/ByDokterId/{id}',[JadwalPeriksaController::class, 'getAllJadwalByDokterId']);
 
 Route::get('/daftar/getAll',[DaftarPoliController::class, 'Index']);
 Route::get('/daftar/ById/{id}',[DaftarPoliController::class, 'ById']);
 Route::post('/daftar/PostJadwal',[DaftarPoliController::class, 'postDaftar']);
-Route::put('/daftar/UpdateJadwal',[DaftarPoliController::class, 'updateDaftar']);
+Route::put('/daftar/UpdateDaftar/{id}',[DaftarPoliController::class, 'updateDaftar']);
 Route::delete('/daftar/DeleteDaftar/{id}',[DaftarPoliController::class, 'destroyDaftar']);
 Route::get('/daftar/pasien/{id}',[DaftarPoliController::class, 'getByPasienId']);
 
 Route::get('/periksa/getAll',[PeriksaController::class, 'Index']);
 Route::get('/periksa/ById/{id}',[PeriksaController::class, 'ById']);
 Route::post('/periksa/PostPeriksa',[PeriksaController::class, 'postPeriksa']);
-Route::put('/periksa/UpdateJadwal',[PeriksaController::class, 'updatePeriksa']);
+Route::put('/periksa/UpdatePeriksa/{id}',[PeriksaController::class, 'updatePeriksa']);
 Route::delete('/periksa/DeleteJadwal/{id}',[PeriksaController::class, 'destroyPeriksa']);
-Route::get('/periksa/DaftarPoli/{id}',[PeriksaController::class, 'ByDaftarPoliId']);
+Route::get('/periksa/ByIdDokter/{id}',[PeriksaController::class, 'ByIdDokter']);
 
 Route::get('/detailPeriksa/getAll',[DetailPeriksaController::class, 'Index']);
 Route::get('/detailPeriksa/ById/{id}',[DetailPeriksaController::class, 'ById']);
-Route::post('/detailPeriksa/PostJadwal',[DetailPeriksaController::class, 'postDetail']);
-Route::put('/detailPeriksa/UpdateJadwal',[DetailPeriksaController::class, 'updateDetail']);
-Route::delete('/detailPeriksa/DeleteJadwal/{id}',[DetailPeriksaController::class, 'destroyDetail']);
+Route::post('/detailPeriksa/PostDetail',[DetailPeriksaController::class, 'postDetail']);
+// Route::put('/detailPeriksa/UpdateJadwal/{id}',[DetailPeriksaController::class, 'updateDetail']);
+// Route::delete('/detailPeriksa/DeleteJadwal/{id}',[DetailPeriksaController::class, 'destroyDetail']);
 Route::get('/detailPeriksa/Periksa/{id}',[DetailPeriksaController::class, 'GetByPeriksaId']);
 Route::delete('/detailPeriksa/Obat/{id}',[DetailPeriksaController::class, 'destroyByIdObat']);
+Route::delete('/detailPeriksa/destroyDetailByPeriksaId/{id}',[DetailPeriksaController::class, 'destroyDetailByPeriksaId']);
+Route::delete('/detailPeriksa/getDetailByPeriksaId/{id}',[DetailPeriksaController::class, 'destroyDetailByPeriksaId']);

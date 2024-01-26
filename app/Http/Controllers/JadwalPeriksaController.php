@@ -139,17 +139,16 @@ class JadwalPeriksaController extends Controller
         ], 404);
     }
 
-    public function getByPoliId($poliId)
-    {
-        // Assuming you have a relationship between JadwalPeriksa and Poli
-        $jadwalPeriksa = JadwalPeriksa::whereHas('dokter.poli', function ($query) use ($poliId) {
-            $query->where('id', $poliId);
-        })->with('dokter')->get();
+    public function getAllJadwalByDokterId($dokterId)
+{
+    $jadwalPeriksa = JadwalPeriksa::where('id_dokter', $dokterId)
+        ->with('dokter.poli')
+        ->get();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Daftar jadwal periksa berdasarkan Poli ID',
-            'data' => $jadwalPeriksa,
-        ], 200);
-    }
+    return response()->json([
+        'success' => true,
+        'message' => 'Daftar jadwal periksa berdasarkan Dokter ID',
+        'data' => $jadwalPeriksa,
+    ], 200);
+}
 }

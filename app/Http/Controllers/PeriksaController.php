@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DaftarPoli;
 use App\Models\Periksa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -19,16 +20,23 @@ class PeriksaController extends Controller
             'data' => $periksa
         ], 200);
     }
-    public function ByDaftarPoliId($id)
-    {
-        $periksa = Periksa::with('daftar_poli', 'daftar_poli.pasien', 'daftar_poli.jadwal_periksa', 'daftar_poli.jadwal_periksa.dokter' )->where('id_daftar_poli', $id)->get();
+    public function ByIdDokter($idDokter)
+{
+    $periksa = Periksa::join('daftar_poli', 'periksa.id_daftar_poli', '=', 'daftar_poli.id')
+        ->join('jadwal_periksa', 'daftar_poli.id_jadwal', '=', 'jadwal_periksa.id')
+        ->join('dokter', 'jadwal_periksa.id_dokter', '=', 'dokter.id')
+        ->where('dokter.id', $idDokter)
+        ->with('daftar_poli.pasien') // Memuat relasi daftar_poli
+        ->select('periksa.*')
+        ->get();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Daftar data periksa',
-            'data' => $periksa
-        ], 200);
-    }
+    return response()->json([
+        'success' => true,
+        'message' => 'Daftar data periksa berdasarkan ID Dokter',
+        'data' => $periksa
+    ], 200);
+}
+    
     public function ById($id)
     {
         $periksa = Periksa::with('daftar_poli', 'daftar_poli.pasien', 'daftar_poli.jadwal_periksa')->find($id);
@@ -64,9 +72,10 @@ class PeriksaController extends Controller
     {
         $validator = Validator::make($req->all(), [
             'id_daftar_poli' => 'required|string',
-            'tgl_periksa' => 'required|date',
+            'tanggal' => 'required|date',
             'catatan' => 'required|string',
             'biaya_periksa' => 'required',
+            'status' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -83,9 +92,14 @@ class PeriksaController extends Controller
             ], 404);
         }
 
-        $periksa->update(
-            $validator->validated()
-        );
+        // Explicitly define the fields you want to update
+    $periksa->id_daftar_poli = $validator->validated()['id_daftar_poli'];
+    $periksa->tanggal = $validator->validated()['tanggal'];
+    $periksa->catatan = $validator->validated()['catatan'];
+    $periksa->biaya_periksa = $validator->validated()['biaya_periksa'];
+    $periksa->status = $validator->validated()['status'];
+    
+    $periksa->save();
 
         return response()->json([
             'success' => true,

@@ -11,7 +11,7 @@ class DetailPeriksaController extends Controller
 {
     public function Index()
     {
-        $detail_periksa = DetailPeriksa::with('periksa', 'obat')->get();
+        $detail_periksa = DetailPeriksa::with('periksa','periksa.daftar_poli','periksa.daftar_poli.pasien', 'obat')->get();
 
         return response()->json([
             'success' => true,
@@ -21,7 +21,7 @@ class DetailPeriksaController extends Controller
     }
     public function GetByPeriksaId($id)
     {
-        $detail_periksa = DetailPeriksa::with('periksa', 'obat')->where('id_periksa', $id)->get();
+        $detail_periksa = DetailPeriksa::with('periksa','periksa.daftar_poli','periksa.daftar_poli.jadwal_periksa','periksa.daftar_poli.jadwal_periksa.dokter','periksa.daftar_poli.pasien', 'obat')->where('id_periksa', $id)->get();
 
         return response()->json([
             'success' => true,
@@ -57,7 +57,7 @@ class DetailPeriksaController extends Controller
         $detail->save();
         return response()->json([
             "message" => "detail periksa added"
-        ],201);
+        ], 201);
     }
     public function updateDetail(Request $req, $id)
     {
@@ -109,7 +109,7 @@ class DetailPeriksaController extends Controller
 
     public function destroyByIdObat($id, $idPeriksa)
     {
-       $detail_periksa = DetailPeriksa::where('id_obat', $id)->where('id_periksa', $idPeriksa)->first();
+        $detail_periksa = DetailPeriksa::where('id_obat', $id)->where('id_periksa', $idPeriksa)->first();
 
         if (!$detail_periksa) {
             return response()->json([
@@ -125,4 +125,21 @@ class DetailPeriksaController extends Controller
             'message' => 'Data detail_periksa berhasil dihapus',
         ], 200);
     }
+    public function destroyDetailByPeriksaId($idPeriksa)
+    {
+        $affectedRows = DetailPeriksa::where('id_periksa', $idPeriksa)->delete();
+    
+        if ($affectedRows === 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak ada data detail_periksa yang dihapus berdasarkan ID periksa',
+            ], 404);
+        }
+    
+        return response()->json([
+            'success' => true,
+            'message' => 'Semua data detail_periksa berhasil dihapus berdasarkan ID periksa',
+        ], 200);
+    }
+    
 }
