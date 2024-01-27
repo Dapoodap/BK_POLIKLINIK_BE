@@ -47,31 +47,25 @@ class JadwalPeriksaController extends Controller
             'tanggal' => 'required|date',
             'status' => 'required',
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
         }
-    
-        // Check if there is an existing active record for the same day
-        $existingActiveRecord = JadwalPeriksa::where('status', 'Y')
-            ->where('id_dokter', $request->input('id_dokter'))
-            ->where('hari', $request->input('hari'))
-            ->first();
-    
-        // If there is an existing active record and the new status is 'Y', return an error
+
+        $existingActiveRecord = JadwalPeriksa::where('status', 'Y')->where('id_dokter', $request->input('id_dokter'))->first();
         if ($existingActiveRecord && $request->input('status') === 'Y') {
             return response()->json([
                 'error' => 'Jadwal Dengan Status Aktif Ditemukan',
             ], 400);
         }
-    
+
         $jadwal_periksa = JadwalPeriksa::create(
             array_merge(
                 $validator->validated(),
                 ['id' => Str::uuid()]
             )
         );
-    
+
         return response()->json([
             'success' => true,
             'message' => 'Jadwal periksa berhasil disimpan',
@@ -89,37 +83,30 @@ class JadwalPeriksaController extends Controller
             'tanggal' => 'required|date',
             'status' => 'required',
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
         }
-    
-        // Check if there is an existing active record for the same day
-        $existingActiveRecord = JadwalPeriksa::where('status', 'Y')
-            ->where('id_dokter', $request->input('id_dokter'))
-            ->where('hari', $request->input('hari'))
-            ->where('id', '!=', $id) // Exclude the current schedule being updated
-            ->first();
-    
-        // If there is an existing active record and the new status is 'Y', return an error
+
+        $existingActiveRecord = JadwalPeriksa::where('status', 'Y')->where('id_dokter', $request->input('id_dokter'))->first();
         if ($existingActiveRecord && $request->input('status') === 'Y') {
             return response()->json([
                 'error' => 'Jadwal Dengan Status Aktif Ditemukan',
             ], 400);
         }
-    
+
         $jadwal_periksa = JadwalPeriksa::findOrFail($id);
-    
+
         if ($jadwal_periksa) {
             $jadwal_periksa->update($validator->validated());
-    
+
             return response()->json([
                 'success' => true,
                 'message' => 'Jadwal periksa berhasil diubah',
                 'data' => $jadwal_periksa
             ], 200);
         }
-    
+
         return response()->json([
             'success' => false,
             'message' => 'Jadwal periksa tidak ditemukan',
